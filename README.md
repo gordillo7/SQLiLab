@@ -66,4 +66,6 @@ Así mismo, se recomienda el uso de este laboratorio en entornos locales y no en
 
 ## 📌 Licencia
 
-Este proyecto se distribuye bajo una licencia *Creative Commons Atribución-NoComercial 4.0 Internacional (CC BY-NC 4.0)* ![Imagen de la licencia](static/images/licenseimage.png)
+Este proyecto se distribuye bajo una licencia *Creative Commons Atribución-NoComercial 4.0 Internacional (CC BY-NC 4.0)*  
+  
+<img src="static/images/licenseimage.png" alt="Imagen de la licencia" width="79" height="28">
