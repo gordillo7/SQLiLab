@@ -41,7 +41,7 @@ python app.py
 La aplicación estará disponible en tu navegador web accediendo a:
 
 ```
-http://localhost:5000
+http://localhost:5000/index
 ```
 
 ---
