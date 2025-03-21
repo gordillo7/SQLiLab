@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de SQL Injection</title>
+    <link rel="stylesheet" type="text/css" href="/static/stylesIndex.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Laboratorio de Práctica de SQL Injection</h1>
+        <p>Bienvenido al laboratorio. Aquí puedes probar diferentes tipos de SQL Injection en bases de datos Oracle y PostgreSQL.</p>
+    </div>
+
+    <div class="card-grid">
+        {% for tipo, sqli in sql_injections.items() %}
+        <div class="card">
+            <h2>{{ sqli['title'] }}</h2>
+            <div class="buttons">
+                <a href="{{ url_for('login_oracle', tipo_sqli=tipo) }}" class="btn oracle">Oracle</a>
+                <a href="{{ url_for('login_postgres', tipo_sqli=tipo) }}" class="btn postgres">PostgreSQL</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

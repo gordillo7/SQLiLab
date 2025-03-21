@@ -1,0 +1,45 @@
+# Ignorar el directorio del entorno virtual
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de paquetes
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+*.egg
+*.egg-info/
+.installed.cfg
+*.egg-info/
+
+# Dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Otros posibles nombres de entornos virtuales
+.env
+.venv
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log

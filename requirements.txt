@@ -1,0 +1,7 @@
+Flask==2.2.0
+werkzeug == 2.2.0
+oracledb~=2.4.1
+psycopg2~=2.9.9
+requests~=2.32.2
+termcolor==2.2.0
+yaspin~=3.1.0

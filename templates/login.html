@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - {{ database }}</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles_TarjetaInfo.css">
+</head>
+<body>
+<div class="main-container">
+
+    <!-- Sección izquierda: Formulario de inicio de sesión o formulario de cookie -->
+    <div class="return-btn-wrapper">
+        <a href="/index" class="elegant-return-btn" id="uniqueReturnButton">Volver</a>
+        {% if is_blind %}
+                <a href="#" class="elegant-cookie-btn" id="toggle-cookie-form">Cookie</a>
+        {% endif %}
+    </div>
+
+
+        <!-- Formulario de edición de cookie para inyección blind -->
+        <div class="cookie-section">
+            <div class="cookie-card">
+                <div id="cookie-header">
+                    <h2 class="cookie-title">Burpsuite Repeater</h2>
+                    <p class="cookie-description">Modifica la <b>cookie de sesión</b> para realizar una SQLI</p>
+                </div>
+
+                <form method="post" id="cookie-form" class="cookie-form" action="{{ url_for('cookie_login') }}">
+                    <div class="request-data">
+                        <input type="hidden" name="tipo_sqli" value="{{ tipo_sqli }}">
+                        <input type="hidden" name="database" value="{{ database }}">
+                        <!-- Simulación de la solicitud HTTP con un textarea editable para la cookie -->
+                        POST /cookie_check HTTP/1.1<br>
+                        Host: AntiSQLI-Security<br>
+                        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)<br>
+                        Accept: text/html,application/xhtml+xml,application/json;<br>
+                        Accept-Language: en-US,en;q=0.5<br>
+                        Accept-Encoding: gzip, deflate, br<br>
+                        Connection: close<br>
+                        Upgrade-Insecure-Requests: 1<br>
+                        Cache-Control: max-age=0<br>
+                        Cookie: <input type="text" class="editable-field" name="cookie_value" required value="d382yd8n21df4314fn817yf6834188ls023d8d">
+                    </div>
+                    <div class="buttons">
+                        <button type="button" class="button" onclick="volverLogin()">Drop</button>
+                        <button type="submit" class="button primary">Forward</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Formulario de inicio de sesión tradicional -->
+        <div class="login-section">
+            <div class="login-box">
+                <h2>Anti SQLI S.L. - {{ database }}</h2>
+                <p>Inicia sesión para acceder a tu cuenta en la base de datos {{ database }}</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                      {% for category, message in messages %}
+                        {% if category == 'welcome' %}
+                          <p class="flash-message success">{{ message }}</p>
+                        {% elif category == 'error' %}
+                          <p class="flash-message error">{{ message }}</p>
+                        {% endif %}
+                      {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form method="post">
+                    <input type="text" name="username" placeholder="Usuario" required>
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <button type="submit">Iniciar sesión</button>
+                </form>
+            </div>
+        </div>
+
+
+    <!-- Sección derecha: Documento explicativo dinámico -->
+    <div class="info-section">
+        <h2>{{ title }}</h2>
+        <div>{{ description | safe }}</div> <!-- Muestra la descripción específica del SQL Injection -->
+
+        <div class="ratings_box">
+            <!-- Sección para las imágenes de dificultad -->
+            <div class="rating">
+                <h3>Dificultad</h3>
+                <div>
+                    {% for i in range(dificultad) %}
+                    <img src="/static/images/inyeccion_ok.png" alt="Inyección" class="rating-item">
+                    {% endfor %}
+                    {% for i in range(3 - dificultad) %}
+                    <img src="/static/images/inyeccion_no.png" alt="Inyección" class="rating-item">
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sección para las imágenes de impacto -->
+            <div class="rating">
+                <h3>Impacto</h3>
+                <div>
+                    {% for i in range(impacto) %}
+                    <img src="/static/images/peligro_ok.png" alt="Impacto" class="rating-item">
+                    {% endfor %}
+                    {% for i in range(3 - impacto) %}
+                    <img src="/static/images/peligro_no.png" alt="Impacto" class="rating-item">
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <!-- Desplegable v0chat -->
+    <div id="v0-code-dropdown-container">
+        <div id="v0-code-dropdown-select-wrapper">
+            <select id="v0-code-dropdown-custom-select">
+                <option value="" disabled selected>Selecciona una opción</option>
+                {% for credential in credenciales %}
+                <option value="{{ credential.nombre }}">{{ credential.nombre }}</option>
+                {% endfor %}
+            </select>
+            <div id="v0-code-dropdown-select-arrow"></div>
+        </div>
+        <div id="v0-code-dropdown-display">
+            {% if is_blind %}
+                <div class="v0-code-dropdown-item">
+                    <span class="v0-code-dropdown-label">Payload correcto:</span>
+                    <div class="v0-code-dropdown-content">
+                        <span id="v0-code-dropdown-payload1-code" class="v0-code-dropdown-code"></span>
+                        <button class="v0-code-dropdown-copy-btn" data-target="v0-code-dropdown-payload1-code">Copiar</button>
+                    </div>
+                </div>
+                <div class="v0-code-dropdown-item">
+                    <span class="v0-code-dropdown-label">Payload erroneo:</span>
+                    <div class="v0-code-dropdown-content">
+                        <span id="v0-code-dropdown-payload2-code" class="v0-code-dropdown-code"></span>
+                        <button class="v0-code-dropdown-copy-btn" data-target="v0-code-dropdown-payload2-code">Copiar</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="v0-code-dropdown-item">
+                    <span class="v0-code-dropdown-label">Usuario:</span>
+                    <div class="v0-code-dropdown-content">
+                        <span id="v0-code-dropdown-user-code" class="v0-code-dropdown-code"></span>
+                        <button class="v0-code-dropdown-copy-btn" data-target="v0-code-dropdown-user-code">Copiar</button>
+                    </div>
+                </div>
+                <div class="v0-code-dropdown-item">
+                    <span class="v0-code-dropdown-label">Contraseña:</span>
+                    <div class="v0-code-dropdown-content">
+                        <span id="v0-code-dropdown-password-code" class="v0-code-dropdown-code"></span>
+                        <button class="v0-code-dropdown-copy-btn" data-target="v0-code-dropdown-password-code">Copiar</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const v0CodeDropdownSelect = document.getElementById('v0-code-dropdown-custom-select');
+        const v0CodeDropdownDisplay = document.getElementById('v0-code-dropdown-display');
+        const v0CodeDropdownUserCode = document.getElementById('v0-code-dropdown-user-code');
+        const v0CodeDropdownPasswordCode = document.getElementById('v0-code-dropdown-password-code');
+        const v0CodeDropdownPayload1Code = document.getElementById('v0-code-dropdown-payload1-code');
+        const v0CodeDropdownPayload2Code = document.getElementById('v0-code-dropdown-payload2-code');
+        const v0CodeDropdownCopyButtons = document.querySelectorAll('.v0-code-dropdown-copy-btn');
+
+        const v0CodeDropdownCodes = {{ credenciales | tojson }};
+        const isBlind = {{ is_blind | tojson }};
+        console.log(v0CodeDropdownCodes)
+        console.log(v0CodeDropdownCodes[0].nombre,
+            v0CodeDropdownCodes[0].usuario,
+            v0CodeDropdownCodes[0].password,);
+        console.log("isBlind: ", isBlind);
+
+
+        v0CodeDropdownSelect.addEventListener('change', (e) => {
+            const selectedOption = e.target.value;
+            for (let i = 0; i < v0CodeDropdownCodes.length; i++) {
+                if (v0CodeDropdownCodes[i].nombre === selectedOption) {
+                    if (isBlind) {
+                        v0CodeDropdownPayload1Code.textContent = v0CodeDropdownCodes[i].usuario;
+                        v0CodeDropdownPayload2Code.textContent = v0CodeDropdownCodes[i].password;
+                    } else {
+                        v0CodeDropdownUserCode.textContent = v0CodeDropdownCodes[i].usuario;
+                        v0CodeDropdownPasswordCode.textContent = v0CodeDropdownCodes[i].password;
+                    }
+                    v0CodeDropdownDisplay.style.display = 'block';
+                    break;
+                }
+            }
+            /*if (selectedOption in v0CodeDropdownCodes) {
+                v0CodeDropdownUserCode.textContent = v0CodeDropdownCodes[selectedOption].user;
+                v0CodeDropdownPasswordCode.textContent = v0CodeDropdownCodes[selectedOption].password;
+                v0CodeDropdownDisplay.style.display = 'block';
+            } else {
+                v0CodeDropdownDisplay.style.display = 'none';
+            }*/
+        });
+
+        v0CodeDropdownCopyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+                const textToCopy = targetElement.textContent;
+
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = button.textContent;
+                    button.textContent = 'Copiado!';
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Error al copiar el texto: ', err);
+                });
+            });
+        });
+    </script>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'Sentencia' %}
+                        <div id="s">{{ message | safe }}</div>
+                    {% endif %}
+
+                    {% if category == 'Resultado' %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endif %}
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+</div>
+
+<script>
+    function toggleDropdown() {
+        const content = document.getElementById("dropdownContent");
+        const arrow = document.getElementById("arrow");
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            arrow.innerHTML = "&#9660;"; // Flecha hacia abajo
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            arrow.innerHTML = "&#9650;"; // Flecha hacia arriba
+        }
+    }
+
+    function copyCode(className) {
+        const code = document.querySelector(`.${className}`).innerText;
+        navigator.clipboard.writeText(code).then(() => {
+        });
+    }
+
+    function volverLogin() {
+        let login = document.getElementsByClassName('login-section');
+        login[0].style.display = 'flex';
+        let cookie = document.getElementsByClassName('cookie-section');
+        cookie[0].style.display = 'none';
+        document.getElementById('toggle-cookie-form').style.display = 'inline-block'; // Mostrar el botón "Cookie" nuevamente
+    }
+
+    // Funcionalidad para el botón "Cookie"
+    document.getElementById('toggle-cookie-form').addEventListener('click', function(e) {
+        e.preventDefault();
+        let login = document.getElementsByClassName('login-section');
+        login[0].style.display = 'none';
+        let cookie = document.getElementsByClassName('cookie-section');
+        cookie[0].style.display = 'flex';
+        document.getElementById('toggle-cookie-form').style.display = 'none';
+    });
+</script>
+</body>
+</html>
