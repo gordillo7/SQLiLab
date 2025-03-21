@@ -66,4 +66,4 @@ Así mismo, se recomienda el uso de este laboratorio en entornos locales y no en
 
 ## 📌 Licencia
 
-Este proyecto se distribuye con fines educativos y sin garantía alguna. Úsalo responsablemente.
+Este proyecto se distribuye bajo una licencia *Creative Commons Atribución-NoComercial 4.0 Internacional (CC BY-NC 4.0)* [!https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc.png]
